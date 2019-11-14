@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Region</title>
+	<meta charset="utf-8">
+	{% load staticfiles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/all.min.css' %}">
+	<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/plotly-latest.min.js' %}"></script>
+	<script type="text/javascript" src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+	<style type="text/css">
+		.name{
+			background-color: white;
+			padding: 1%;
+			margin: 0;
+			text-align: center;
+			font-weight: bold;
+			font-size: 18px;
+		}
+		.stats{
+			background-color: white;
+			margin: 1%;
+			text-align: center;
+			padding:2% 5%;
+		}
+		.stats i{
+			width: 100%;
+			text-align: right;
+			font-size: 300%;
+			padding: auto;
+			margin: 5% auto;
+			color:#555;
+		}
+		.stats p{
+			margin: 0;
+			padding: 0;
+			font-size: 12px;
+			font-weight: bold;
+		}
+		.stats .val{
+			font-size: 30px;
+			margin: 1% 0 1% 0;
+
+		}
+		.graph{
+			width: 100%;
+		}
+		.graph .card{
+			margin-top: 10px;
+		}
+		.month select, input[type=text]{
+			width: 30%;
+			text-align: center;
+			height: 30px;
+			background-color: white;
+			border: 1px solid #ccc;
+			color: #333;
+		}
+		.month input[type=submit]{
+			height: 30px;
+			width: 100px;
+			background-color: palegreen;
+			border: none;
+			color: black;
+		}
+		.region-list{
+			padding: 5%;
+		}
+		.region-list a{
+			font-size: 12px;
+			display: block;
+			text-decoration: none;
+			color: #333;
+			width: 100%;
+			padding: 0 0 0 10%;
+			transition: 0.1s;
+		}
+		.region-list a:hover,
+		.region-list a:focus{
+			color: black;
+			font-weight: bold;
+		}
+	</style>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-1 left-pan">
+				<div class="vertical-nav">
+					<div class="link-group">
+						<a href="../index">
+							<i class="fa fa-home"></i>	
+							<p>Home</p>
+						</a>
+						<a href="" class="active">
+							<i class="fa fa-map"></i>	
+							<p>Region</p>
+						</a>
+						<a href="../predict/?region=0&year=2019">
+							<i class="fa fa-umbrella"></i>
+							<p>Prediction</p>
+						</a>
+						<a href="../about/">
+							<i class="fa fa-user"></i>	
+							<p>About</p>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-11 right-pan">
+				<div class="row" style="padding: 0.2%">
+					<div class="name">{{name|safe}}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-3">
+						<div class="stats">
+							<div class="row">
+								<div class="col-sm-4">
+									<i class="fa fa-cloud-showers-heavy"></i>
+								</div>
+								<div class="col-sm-8">
+									<p>Highest Rainfall Year</p>
+									<div class="val" style="color:#3CB371 ;">{{high_year|safe}}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="stats">
+							<div class="row">
+								<div class="col-sm-4">
+									<i class="fa fa-cloud-showers-heavy"></i>
+								</div>
+								<div class="col-sm-8">
+									<p>Highest Rainfall Month</p>
+									<div class="val" style="color:#3CB371;">{{high_month|safe}}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="stats">
+							<div class="row">
+								<div class="col-sm-4">
+									<i class="fa fa-cloud-rain"></i>
+								</div>
+								<div class="col-sm-8">
+									<p>Lowest Rainfall Year</p>
+									<div class="val" style="color:#3CB371 ;">{{low_year|safe}}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="stats">
+							<div class="row">
+								<div class="col-sm-4">
+									<i class="fa fa-cloud-rain"></i>
+								</div>
+								<div class="col-sm-8">
+									<p>Lowest Rainfall MOnth</p>
+									<div class="val" style="color:#3CB371 ;">{{low_month|safe}}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="graph">
+						<div class="row" style="margin-bottom: 20px">
+							<div class="col-sm-9" style="padding: 0 0.5% 0 0">
+								<div class="card month">
+									<div class="card-head">Monthly Analysis</div>
+									<div class="card-body">
+										<form action="">
+											<input type="text" name="region" value="{{ region_get|safe }}" style="display: none;">
+											<select name="month">
+												<option>---SELECT MONTH---</option>
+												<option selected="selected" value="1">JANUARY</option>
+												<option value="2">FEBRUARY</option>
+												<option value="3">MARCH</option>
+												<option value="4">APRIL</option>
+												<option value="5">MAY</option>
+												<option value="6">JUN</option>
+												<option value="7">JULY</option>
+												<option value="8">AUGUST</option>
+												<option value="9">SEPTEMBER</option>
+												<option value="10">OCTOMBER</option>
+												<option value="11">NOVEMBER</option>
+												<option value="12">DECEMBER</option>
+											</select>
+											<input type="text" name="year" value="{{ year_get|safe }}" style="display: none;">
+											<input type="submit" value="Analyze">
+										</form>
+										<hr style="margin: 1%">
+										<div id="month_analysis"></div>
+										<script type="text/javascript">
+											var xaxis = {{ xvalues|safe }}
+											console.log(xaxis)
+											var yaxis = {{yvalues|safe}}
+											console.log(yaxis)
+											var data = [
+											  {
+											    x: xaxis,
+											    y: yaxis,
+											    type: 'line'
+											  }
+											]
+											var layout = {
+												autosize: false,				
+												width: 850,
+												height: 300,
+												margin: {
+											    	l: 100,
+											    	r: 20,
+											    	b: 50,
+											    	t: 0,
+											    	pad: 10
+											  	},
+												title: {
+													font: {
+														size: 10,
+														weight: 'bold'
+													},
+													xref: 'paper',
+								    				x: 0.5,
+												},
+												xaxis: {
+													title: {
+														text: 'Years',	
+													},
+												},
+												yaxis: {
+													title: {
+														text: 'Rainfall in (mm)',
+													},
+												}
+											}
+
+											Plotly.newPlot('month_analysis', data, layout);
+										</script>
+									</div>
+										
+								</div>
+
+								<div class="card">
+									<div class="card-head">Accuracy Visualization</div>
+									<div class="card-body">
+										<div id="BarGraph" style="width: 100%;"></div>
+										<script type="text/javascript">
+											var trace1 = {
+							                  x: {{ xtrace1|safe }},
+							                  y: {{ ytrace1|safe }},
+							                  mode: 'markers',
+							                  type: 'scatter',
+							                  name: 'Real Data'
+							                };
+							                
+							                var trace2 = {
+							                  x: {{ xtrace2|safe }},
+							                  y: {{ ytrace2|safe }},
+							                  mode: 'lines',
+							                  type: 'scatter',
+							                  name: 'Predicted Data'
+							                };
+							                
+							                var layout = {
+												autosize: false,				
+												width: 900,
+												height: 400,
+												margin: {
+											    	l: 100,
+											    	r: 20,
+											    	b: 50,
+											    	t: 10,
+											    	pad: 4
+											  	},
+												title: {
+													font: {
+														size: 10,
+														weight: 'bold'
+													},
+													xref: 'paper',
+								    				x: 0.5,
+												},
+												xaxis: {
+													title: {
+														text: 'Years',	
+													},
+												},
+												yaxis: {
+													title: {
+														text: 'Rainfall in (mm)',
+													},
+												}
+											}
+							                
+							                var data = [trace1, trace2];
+							                
+							                Plotly.newPlot('BarGraph', data, layout);
+										</script>
+									<div><h2 style="margin-bottom:20px;">Coefficient of determination(R<sup>2</sup>) : {{accuracy}}</h2></div>	
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-3" style="padding: 0 0 0 0.5%">
+								<div class="card" style="padding: 5%;">
+									<img src="{% static 'media/region.png' %}" width="100%">	
+								</div>
+
+								<div class="card">
+									<div class="card-head">Navigate Through REGIONS</div>
+									<div class="region-list" style="overflow-y: scroll; height:450px;">
+										<a href="../region?region=0&month=1&year=2015">ANDAMAN & NICOBAR ISLANDS</a>
+										<a href="../region?region=1&month=1&year=2015">ARUNACHAL PRADESH</a>
+										<a href="../region?region=2&month=1&year=2015">ASSAM & MEGHALAYA</a>
+										<a href="../region?region=3&month=1&year=2015">NAGA MANI MIZO TRIPURA</a>
+										<a href="../region?region=4&month=1&year=2015">SUB HIMALAYAN WEST BENGAL & SIKKIM</a>
+										<a href="../region?region=5&month=1&year=2015">GANGETIC WEST BENGAL</a>
+										<a href="../region?region=6&month=1&year=2015">ORISSA</a>
+										<a href="../region?region=7&month=1&year=2015">JHARKHAND</a>
+										<a href="../region?region=8&month=1&year=2015">BIHAR</a>
+										<a href="../region?region=9&month=1&year=2015">EAST UTTAR PRADESH</a>
+										<a href="../region?region=10&month=1&year=2015">WEST UTTAR PRADESH</a>
+										<a href="../region?region=11&month=1&year=2015">UTTARAKHAND</a>
+										<a href="../region?region=12&month=1&year=2015">HARYANA DELHI & CHANDIGARH</a>
+										<a href="../region?region=13&month=1&year=2015">PUNJAB</a>
+										<a href="../region?region=14&month=1&year=2015">HIMACHAL PRADESH</a>
+										<a href="../region?region=15&month=1&year=2015">JAMMU & KASHMIR</a>
+										<a href="../region?region=16&month=1&year=2015">WEST RAJASTHAN</a>
+										<a href="../region?region=17&month=1&year=2015">EAST RAJASTHAN</a>
+										<a href="../region?region=18&month=1&year=2015">WEST MADHYA PRADESH</a>
+										<a href="../region?region=19&month=1&year=2015">EAST MADHYA PRADESH</a>
+										<a href="../region?region=20&month=1&year=2015">GUJARAT REGION</a>
+										<a href="../region?region=21&month=1&year=2015">SAURASHTRA & KUTCH</a>
+										<a href="../region?region=22&month=1&year=2015">KONKAN & GOA</a>
+										<a href="../region?region=23&month=1&year=2015">MADHYA MAHARASHTRA</a>
+										<a href="../region?region=24&month=1&year=2015">MATATHWADA</a>
+										<a href="../region?region=25&month=1&year=2015">VIDARBHA</a>
+										<a href="../region?region=26&month=1&year=2015">CHHATTISGARH</a>
+										<a href="../region?region=27&month=1&year=2015">COASTAL ANDHRA PRADESH</a>
+										<a href="../region?region=28&month=1&year=2015">TELANGANA</a>
+										<a href="../region?region=29&month=1&year=2015">RAYALSEEMA</a>
+										<a href="../region?region=30&month=1&year=2015">TAMIL NADU</a>
+										<a href="../region?region=31&month=1&year=2015">COASTAL KARNATAKA</a>
+										<a href="../region?region=32&month=1&year=2015">NORTH INTERIOR KARNATAKA</a>
+										<a href="../region?region=33&month=1&year=2015">SOUTH INTERIOR KARNATAKA</a>
+										<a href="../region?region=34&month=1&year=2015">KERALA</a>
+										<a href="../region?region=35&month=1&year=2015">LAKSHADWEEP</a>	
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

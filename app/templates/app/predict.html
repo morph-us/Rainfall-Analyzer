@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Prediction</title>
+	<meta charset="utf-8">
+	{% load staticfiles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/all.min.css' %}">
+	<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/plotly-latest.min.js' %}"></script>
+	<script type="text/javascript" src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'preloader.css' %}">
+
+	<style type="text/css">
+		.card form{
+			text-align: center;
+		}
+		.card input[type=text],
+		.card select{
+			width: 300px;
+			height: 30px;
+			background-color: white;
+			padding: 0 0 0 1%;
+		}
+		.card input[type=submit]{
+			background-color: palegreen;
+			height: 30px;
+			border:none;
+			width: 150px;
+		}
+		.right-pan .row{
+			margin-top: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-1 left-pan">
+				<div class="vertical-nav">
+					<div class="link-group">
+						<a href="../index">
+							<i class="fa fa-home"></i>	
+							<p>Home</p>
+						</a>
+						<a href="../region?region=0&month=1&year=2015">
+							<i class="fa fa-map"></i>	
+							<p>Region</p>
+						</a>
+						<a href="" class="active">
+							<i class="fa fa-umbrella"></i>
+							<p>Prediction</p>
+						</a>
+						<a href="../about/">
+							<i class="fa fa-user"></i>	
+							<p>About</p>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-11" style="padding: 0">
+				<div class="right-pan">
+					<div class="row" style="margin: 0;">
+						<div style="text-align: center; padding: 1%;font-weight: bold; font-size: 20px">{{region|safe}} ({{year|safe}})</div>
+					</div>
+					<div class="row" style="margin-top: 0">
+						<div class="card">
+							<div class="card-head" style="text-align: center; padding: 0.5%">Prediction Input</div>
+							<div class="card-body">
+								<form>
+									<input type="text" name="year" placeholder="Enter year (e.g. 2019)">
+									<select name="region">
+										<option value="-1">---SELECT REGION---</option>
+										<option value="0">ANDAMAN & NICOBAR ISLANDS</option>
+										<option value="1">ARUNACHAL PRADESH</option>
+										<option value="2">ASSAM & MEGHALAYA</option>
+										<option value="3">NAGA MANI MIZO TRIPURA</option>
+										<option value="4">SUB HIMALAYAN WEST BENGAL & SIKKIM</option>
+										<option value="5">GANGETIC WEST BENGAL</option>
+										<option value="6">ORISSA</option>
+										<option value="7">JHARKHAND</option>
+										<option value="8">BIHAR</option>
+										<option value="9">EAST UTTAR PRADESH</option>
+										<option value="10">WEST UTTAR PRADESH</option>
+										<option value="11">UTTARAKHAND</option>
+										<option value="12">HARYANA DELHI & CHANDIGARH</option>
+										<option value="13">PUNJAB</option>
+										<option value="14">HIMACHAL PRADESH</option>
+										<option value="15">JAMMU & KASHMIR</option>
+										<option value="16">WEST RAJASTHAN</option>
+										<option value="17">EAST RAJASTHAN</option>
+										<option value="18">WEST MADHYA PRADESH</option>
+										<option value="19">EAST MADHYA PRADESH</option>
+										<option value="20">GUJARAT REGION</option>
+										<option value="21">SAURASHTRA & KUTCH</option>
+										<option value="22">KONKAN & GOA</option>
+										<option value="23">MADHYA MAHARASHTRA</option>
+										<option value="24">MATATHWADA</option>
+										<option value="25">VIDARBHA</option>
+										<option value="26">CHHATTISGARH</option>
+										<option value="27">COASTAL ANDHRA PRADESH</option>
+										<option value="28">TELANGANA</option>
+										<option value="29">RAYALSEEMA</option>
+										<option value="30">TAMIL NADU</option>
+										<option value="31">COASTAL KARNATAKA</option>
+										<option value="32">NORTH INTERIOR KARNATAKA</option>
+										<option value="33">SOUTH INTERIOR KARNATAKA</option>
+										<option value="34">KERALA</option>
+										<option value="35">LAKSHADWEEP</option>
+									</select>
+									<input type="submit" value="Start Prediction">
+								</form>
+							</div>
+								
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-6" style="padding: 0 0.5% 0 0">
+							<div class="card">
+								<div class="card-head">Rainfall in year {{year|safe}}</div>
+								<div class="card-body">
+									<div id="BarGraph" style="width: 100%;">
+										<script type="text/javascript">
+											var xaxis = {{ xvalues|safe }}
+											console.log(xaxis)
+											var yaxis = {{yvalues|safe}}
+											console.log(yaxis)
+											var data = [
+											  {
+											    x: xaxis,
+											    y: yaxis,
+											    type: 'bar'
+											  }
+											]
+											var layout = {
+												autosize: false,				
+												width: 550,
+												height: 300,
+												margin: {
+											    	l: 60,
+											    	r: 20,
+											    	b: 50,
+											    	t: 10,
+											    	pad: 4
+											  	},
+												title: {
+													font: {
+														size: 10,
+														weight: 'bold'
+													},
+													xref: 'paper',
+								    				x: 0.5,
+												},
+												xaxis: {
+													title: {
+														text: 'Months',	
+													},
+												},
+												yaxis: {
+													title: {
+														text: 'Rainfall in (mm)',
+													},
+												}
+											}
+
+											Plotly.newPlot('BarGraph', data, layout);
+										</script>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6" style="padding: 0 0 0 0.5%">
+							<div class="card">
+								<div class="card-head">Month-group wise analysis ({{year|safe}})</div>
+								<div class="card-body">
+									<div id="pie"></div>
+									<script type="text/javascript">
+										val = {{pie.0|safe}}
+										label = {{pie.1|safe}}
+										console.log(val);
+										console.log(label);
+										var data = [{
+										  values: val,
+										  labels: label,
+										  hole: 4,
+										  type: 'pie'
+										}];
+
+										var layout = {
+										  height: 300,
+										  width: 600,
+										  margin:{
+										  	t:20,
+										  	b:20,
+										  	r:50,
+										  	l:50
+										  },
+										  padding: 4
+										};
+										Plotly.newPlot('pie', data, layout);
+									</script>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

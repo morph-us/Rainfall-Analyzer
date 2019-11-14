@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>About</title>
+	<meta charset="utf-8">
+	{% load staticfiles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/all.min.css' %}">
+	<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/plotly-latest.min.js' %}"></script>
+	<script type="text/javascript" src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'preloader.css' %}">
+
+	<style type="text/css">
+		.card-body{
+			text-align: justify;
+		}
+		.card form{
+			text-align: center;
+		}
+		.card input[type=text],
+		.card select{
+			width: 300px;
+			height: 30px;
+			background-color: white;
+			padding: 0 0 0 1%;
+		}
+		.card input[type=submit]{
+			background-color: palegreen;
+			height: 30px;
+			border:none;
+			width: 150px;
+		}
+		.right-pan .row{
+			margin-top: 10px;
+		}
+		.profile{
+			background-color: white;
+			text-align: center;
+			padding-bottom: 5%;
+			min-height: 300px;
+		}
+		.profile .profile-img img{
+			border-radius: 50%;
+			margin: 20% auto 5% auto;
+			padding: 5px;
+			background-color: #ccc;
+		}
+		.profile .profile-dsc p{
+			margin: 0 0 0.5% 0;
+			font-weight: bold;
+		}
+		.about p{
+			margin-bottom: 0;
+		}
+	</style>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-1 left-pan">
+				<div class="vertical-nav">
+					<div class="link-group">
+						<a href="../index/">
+							<i class="fa fa-home"></i>	
+							<p>Home</p>
+						</a>
+						<a href="../region?region=0&month=1&year=2015">
+							<i class="fa fa-map"></i>	
+							<p>Region</p>
+						</a>
+						<a href="../predict/?region=0&year=2019">
+							<i class="fa fa-umbrella"></i>
+							<p>Prediction</p>
+						</a>
+						<a href="" class="active">
+							<i class="fa fa-user"></i>	
+							<p>About</p>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-11" style="padding: 0">
+				<div class="right-pan">
+					<div class="row">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-8" style="padding: 0.5%">
+							<div class="card about">
+								<div class="card-head">About</div>
+								<div class="card-body" style="padding: 2% 5% 2% 5%; font-size: 14px;">
+									The Rainfall Analyzer studies the rainfall data from year 1901 to year 2015 of 36  regions in India throughout each 12 months, and predicts the approximate rainfall in particular year according to the regions.
+									
+									It uses Python and Django as it's backbone and HTML, CSS, BOOTSTRAP for visuals as well as Plotly library for the Graphs. <br><br>
+									<b><i>Dataset</i></b><br>
+									<font><u>Context</u></font><br>
+									<p>This data set contains monthly rainfall detail of 36 meteorological sub-divisions of India. </p>
+									<font><u>Content</u></font>
+									<p>Time Period: 1901 - 2015 </p>
+									<p>Granularity: Monthly </p>
+									<p>Location: 36 meteorological sub-divisions in India </p>
+									<p>Rainfall unit: mm </p><br>
+									<b><i>Dataset references</i></b>
+									<ul>
+										<li><a href="https://data.gov.in/resources/subdivision-wise-rainfall-and-its-departure-1901-2015">https://data.gov.in/resources/subdivision-wise-rainfall-and-its-departure-1901-2015</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-2"></div>
+					</div>
+					<div class="row" style="margin-bottom: 20px">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-8" style="padding: 0.5%">
+							<div class="card">
+								<div class="card-head">
+									Members
+								</div>
+								<div class="card-body">
+									<div class="row" style="width: 100%;margin: 0 auto 0 auto">
+										<div class="col-sm-3" style="padding: 0.5%; border: 1px">
+											<div class="profile">
+												<div class="profile-img">
+													<img src="{% static 'media/shubham.jpg' %}" width="75%">
+												</div>
+												<div class="profile-dsc">
+													<p>SHUBHAM B. GUJARATHI</p>
+													<p style="font-size: 12px">TE1-C</p>
+													<p style="font-size: 12px">305060</p>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-3" style="padding: 0.5%">
+											<div class="profile">
+												<div class="profile-img">
+													<img src="{% static 'media/harshal.jpeg' %}" width="75%">
+												</div>
+												<div class="profile-dsc">
+													<p>HARSHAL CHOUDHARY</p>
+													<p style="font-size: 12px">TE1-C</p>
+													<p style="font-size: 12px">305050</p>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-3" style="padding: 0.5%">
+											<div class="profile">
+												<div class="profile-img">
+													<img src="{% static 'media/rutika.png' %}" width="75%">
+												</div>
+												<div class="profile-dsc">
+													<p>RUTIKA A. PATIL</p>
+													<p style="font-size: 12px">TE1-C</p>
+													<p style="font-size: 12px">305059</p>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-3" style="padding: 0.5%">
+											<div class="profile">
+												<div class="profile-img">
+													<img src="{% static 'media/pushkar.jpeg' %}" width="75%">
+												</div>
+												<div class="profile-dsc">
+													<p>PUSHKAR R. DOUNDE</p>
+													<p style="font-size: 12px">TE1-C</p>
+													<p style="font-size: 12px">305061</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-2"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
