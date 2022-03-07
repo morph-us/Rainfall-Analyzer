@@ -1,0 +1,38 @@
+#run following commands to install essentials 
+
+sudo apt update
+sudo apt install python3-pip
+
+#setup virtual environment in your system
+
+1.create virtual environment { replace 'envirnomentName' with any name you want}
+python3 -m venv envirnomentName
+
+2.Activate virtual environment created in step 1
+source envirnomentName/bin/activate
+
+Now lets setup the project
+
+install following packages or (pip install -r requirements.txt ) 
+
+
+1.install django 
+python -m pip install Django 
+
+2.install numpy module 
+pip install numpy
+
+3. install pandas module
+pip install pandas
+
+4.install sklearn module
+pip install scikit-learn
+
+
+How to run :
+
+open project directory containing manage.py file
+
+run following command:
+python manage.py runserver
+

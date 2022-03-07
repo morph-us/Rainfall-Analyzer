@@ -2,8 +2,11 @@ from django.shortcuts import render, redirect, HttpResponse
 import time
 import pandas as pd 
 import json
+import numpy as np
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.preprocessing import Imputer
+#from sklearn.preprocessing import Imputer
+from sklearn.impute import SimpleImputer
+
 from sklearn.model_selection import train_test_split
 dataset = pd.read_csv('rainfall_india.csv')
 statewise = pd.read_csv('state1.csv')
@@ -34,7 +37,7 @@ for state in regions:
 
 
 def createmodel(X_train,y_train,i):
-    regressor = RandomForestRegressor(n_estimators = 1000, random_state = 0,criterion='mse')
+    regressor = RandomForestRegressor(n_estimators = 1000, random_state = 0,criterion='squared_error')
     regressor.fit(X_train, y_train[:,i])
     return regressor
 
@@ -47,7 +50,7 @@ def getmodel(region_id,i):
     X = dataset.iloc[start:stop, 1].values
     y = dataset.iloc[start:stop, 2:19].values
 
-    imputer = Imputer(missing_values = 'NaN', strategy = 'mean', axis = 0)
+    imputer = SimpleImputer(missing_values = np.nan, strategy = 'mean')
     imputer = imputer.fit(y[:, 0:])
     y[:, 0:] = imputer.transform(y[:, 0:])
 
@@ -169,7 +172,7 @@ def predict(request):
     X = dataset.iloc[start:stop, 1].values
     y = dataset.iloc[start:stop, 2:19].values
 
-    imputer = Imputer(missing_values = 'NaN', strategy = 'mean', axis = 0)
+    imputer = SimpleImputer(missing_values = np.nan, strategy = 'mean')
     imputer = imputer.fit(y[:, 0:])
     y[:, 0:] = imputer.transform(y[:, 0:])
 
