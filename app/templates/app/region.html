@@ -160,7 +160,7 @@
 									<i class="fa fa-cloud-rain"></i>
 								</div>
 								<div class="col-sm-8">
-									<p>Lowest Rainfall MOnth</p>
+									<p>Lowest Rainfall Month</p>
 									<div class="val" style="color:#3CB371 ;">{{low_month|safe}}</div>
 								</div>
 							</div>
@@ -178,7 +178,17 @@
 											<input type="text" name="region" value="{{ region_get|safe }}" style="display: none;">
 											<select name="month">
 												<option>---SELECT MONTH---</option>
-												<option selected="selected" value="1">JANUARY</option>
+												{%for item in select%}
+		
+												{% if item == month %}
+												
+													<option selected="selected" value={{ select|get_item:item }} >{{item}}</option>
+												{%else%}
+													<option value={{ select|get_item:item }} >{{item}}</option>
+												{%endif%}
+												{%endfor%}
+												
+												<!-- <option selected="selected" value="1">JANUARY</option>
 												<option value="2">FEBRUARY</option>
 												<option value="3">MARCH</option>
 												<option value="4">APRIL</option>
@@ -189,7 +199,7 @@
 												<option value="9">SEPTEMBER</option>
 												<option value="10">OCTOMBER</option>
 												<option value="11">NOVEMBER</option>
-												<option value="12">DECEMBER</option>
+												<option value="12">DECEMBER</option> -->
 											</select>
 											<input type="text" name="year" value="{{ year_get|safe }}" style="display: none;">
 											<input type="submit" value="Analyze">

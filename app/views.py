@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
 import time
+
 import pandas as pd 
 import json
 import numpy as np
@@ -8,6 +9,14 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.impute import SimpleImputer
 
 from sklearn.model_selection import train_test_split
+
+from django.template.defaulttags import register
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
+
+
 dataset = pd.read_csv('rainfall_india.csv')
 statewise = pd.read_csv('state1.csv')
 months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
@@ -16,7 +25,7 @@ loc=[0,110,207,322,437,552,667,782,897,1012,1127,1142,1357,1472,1587,1702,1817,1
 regions=dataset.iloc[:,0].values
 regions=list(regions)
 
-
+#find unique from regions
 def Remove(duplicate): 
     final_list = [] 
     for num in duplicate: 
@@ -27,6 +36,7 @@ regions=Remove(regions)
 
 region_frames=[]
 maxcolumn=[]
+
 
 for state in regions:    
 	cond=dataset['SUBDIVISION']==state
@@ -64,38 +74,6 @@ def getmodel(region_id,i):
     return obj
     
 
-# Create your views here.
-def index(request):
-	high_rain_region=statewise.loc[statewise['ANNUAL'].idxmax()][0]
-	high_rain_region_value=int(statewise.loc[statewise['ANNUAL'].idxmax()][13])
-	low_rain_region=statewise.loc[statewise['ANNUAL'].idxmin()][0]
-	low_rain_region_value=int(statewise.loc[statewise['ANNUAL'].idxmin()][13])        
-	stateindex=statewise.set_index('SUBDIVISION')
-	stateindex =stateindex.drop(stateindex.columns[[12,13,14,15,16,17]], axis=1)
-	p=stateindex.apply(lambda x: x.argmax(), axis=1)
-	higest_rain_month=p[36]
-	higest_rain_month_value = int(stateindex.iloc[36][p[36]])
-	q=stateindex.apply(lambda x: x.argmin(), axis=1)
-	lowest_rain_month=q[36]
-	lowest_rain_month_value = int(stateindex.iloc[36][q[36]])
-	yeardf=dataset.groupby('YEAR').sum()
-	yeardf.reset_index(level=0, inplace=True)
-	highest_rain_year=int(yeardf.loc[yeardf['ANNUAL'].idxmax()][0])
-	highest_rain_year_value=int(yeardf.loc[yeardf['ANNUAL'].idxmax()]['ANNUAL'])
-	lowest_rain_year=int(yeardf.loc[yeardf['ANNUAL'].idxmin()][0])
-	lowest_rain_year_value=int(yeardf.loc[yeardf['ANNUAL'].idxmin()]['ANNUAL'])
-
-	datalist=[high_rain_region,high_rain_region_value,low_rain_region,low_rain_region_value,higest_rain_month,lowest_rain_month,highest_rain_year,lowest_rain_year, highest_rain_year_value, lowest_rain_year_value,lowest_rain_month_value, higest_rain_month_value]
-	yearframe=dataset.groupby('YEAR').mean()
-	annualrain = list(yearframe.iloc[:,12].values)
-	years=list(yearframe.index)
-	monthlyrain=list(statewise.iloc[36,1:14].values)
-	xvalues=years
-	yvalues=annualrain
-	y_var = [annualrain,monthlyrain]
-	x_var = [years,months]
-
-	return render(request, 'app/index.html', {'xvalues':x_var, 'yvalues':y_var,'data':datalist})
 
 high_rain_year=[]
 low_rain_year=[]
@@ -117,20 +95,66 @@ def lowest_rain_year():
 		i=i+1
 
 
+# Create your views here.
+
+#index page containing stats about rainfall in India 
+def index(request):
+    
+	high_rain_region=statewise.loc[statewise['ANNUAL'].idxmax()][0]
+	high_rain_region_value=int(statewise.loc[statewise['ANNUAL'].idxmax()][13])
+	low_rain_region=statewise.loc[statewise['ANNUAL'].idxmin()][0]
+	low_rain_region_value=int(statewise.loc[statewise['ANNUAL'].idxmin()][13])  
+
+
+	stateindex=statewise.set_index('SUBDIVISION')
+	stateindex =stateindex.drop(stateindex.columns[[12,13,14,15,16,17]], axis=1)
+	p=stateindex.apply(lambda x: x.argmax(), axis=1)
+	higest_rain_month=p[36]
+	higest_rain_month_value = int(stateindex.iloc[36][p[36]])
+
+	q=stateindex.apply(lambda x: x.argmin(), axis=1)
+	lowest_rain_month=q[36]
+	lowest_rain_month_value = int(stateindex.iloc[36][q[36]])
+    
+	yeardf=dataset.groupby('YEAR').sum()
+	yeardf.reset_index(level=0, inplace=True)
+	highest_rain_year=int(yeardf.loc[yeardf['ANNUAL'].idxmax()][0])
+	highest_rain_year_value=int(yeardf.loc[yeardf['ANNUAL'].idxmax()]['ANNUAL'])
+	lowest_rain_year=int(yeardf.loc[yeardf['ANNUAL'].idxmin()][0])
+	lowest_rain_year_value=int(yeardf.loc[yeardf['ANNUAL'].idxmin()]['ANNUAL'])
+
+	datalist=[high_rain_region,high_rain_region_value,low_rain_region,low_rain_region_value,higest_rain_month,lowest_rain_month,highest_rain_year,lowest_rain_year, highest_rain_year_value, lowest_rain_year_value,lowest_rain_month_value, higest_rain_month_value]
+	yearframe=dataset.groupby('YEAR').mean()
+	annualrain = list(yearframe.iloc[:,12].values)
+	years=list(yearframe.index)
+	monthlyrain=list(statewise.iloc[36,1:14].values)
+
+
+	xvalues=years
+	yvalues=annualrain
+	y_var = [annualrain,monthlyrain]
+	x_var = [years,months]
+
+	return render(request, 'app/index.html', {'xvalues':x_var, 'yvalues':y_var,'data':datalist})
+
+
+
 def region(request):
     region_id = int(request.GET['region'])
     month_id = int(request.GET['month'])
     year_id = int(request.GET['year'])
+
     region_name = regions[int(region_id)]
-    xvalues=list(region_frames[region_id].iloc[:,1])
-    yvalues=list(region_frames[region_id].iloc[:,month_id+1])
+    xvalues=list(region_frames[region_id].iloc[:,1])#get years
+    yvalues=list(region_frames[region_id].iloc[:,month_id+1])#get values for given month
     y_var = yvalues
     x_var = json.dumps(xvalues)
+    
     start=loc[region_id]
     stop=loc[region_id+1]
     X = dataset.iloc[start:stop, 1].values
     y = dataset.iloc[start:stop, 2:15].values
-    obj=getmodel(region_id,month_id-1)
+    obj=getmodel(region_id,month_id-1) #create model required for region and given month
     d=y[:,month_id-1]
     y_pred=obj.predict(X.reshape(-1,1))
     
@@ -152,17 +176,43 @@ def region(request):
     higest_rain_month=p[region_id]
     q=stateindex.apply(lambda x: x.argmin(), axis=1)
     lowest_rain_month=q[region_id]
-
     
-    input = {'high_month':higest_rain_month,'low_month':lowest_rain_month,'high_year':highestyear, 'low_year':lowestyear, 'name':region_name,'year_get':year_id ,'month_get':month_id, 'region_get':region_id, 'xvalues':x_var, 'yvalues':y_var,'month':months[month_id-1], 'xtrace1':x1_var, 'ytrace1':y1_var,'xtrace2':x2_var, 'ytrace2':y2_var,'accuracy':acc}
+    selectmap = {months[i]: months.index(months[i])+1 for i in range(len(months)) }
+
+    input = {
+    'high_month':higest_rain_month,
+    'low_month':lowest_rain_month,
+    'high_year':highestyear, 
+    'low_year':lowestyear,
+     'name':region_name,
+     'year_get':year_id ,
+     'month_get':month_id, 
+    'region_get':region_id,
+     'xvalues':x_var,
+      'yvalues':y_var,
+      'month':months[month_id-1],
+     'xtrace1':x1_var, 
+     'ytrace1':y1_var,'xtrace2':x2_var, 'ytrace2':y2_var,
+     'accuracy':acc,
+     'select': selectmap
+     }
+    print(selectmap)
     return render(request, 'app/region.html', input)
 
 
 
 def predict(request):
-    num1=int(request.GET['year'])
+    yearInput = request.GET['year']
+    regionInput = request.GET['region'] 
+    if yearInput == '':
+        yearInput = 2022
+    elif regionInput not in range(len(regions)):
+        regionInput = 1
+
+
+    num1=int(yearInput)
     year=[[num1]]
-    num2=int(request.GET['region'])
+    num2=int(regionInput)
     region=num2
     region_name = regions[int(region)]
     
@@ -191,7 +241,7 @@ def predict(request):
         
     yvalues=list(y_pred[:13])
     xvalues=list(months)
-  #  xvalues=list(xvalues.append('ANNUAL'))
+  #  xvalues=list(xvalues.append('ANNUAL'))``
     piechart_val=list(y_pred[13:])
     piechart_label=['Jan-Feb', 'Mar-May',
        'Jun-Sep', 'Oct-Dec']
